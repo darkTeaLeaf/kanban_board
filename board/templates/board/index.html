@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+{% load static %}
+{% load filter_tag %}
+<html lang="en" xmlns:html="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="{% static 'css/board.css' %}">
+    <meta charset="UTF-8">
+    <title>Kanban Board</title>
+
+</head>
+<body>
+
+{% for column in columns %}
+    <div class="column">
+        <h2 class="column_title">{{ column.title }}</h2>
+        <div class="scroll">
+            {% for task in tasks|get_column_tasks:column %}
+                <div class="task">
+                    <p class="task_text">{{ task.text }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <form method="POST" action="" style="margin-top: 10px">
+            {% csrf_token %}
+            <svg class="svg-circleplus" id="{{ column.title }}_plus" viewBox="0 0 100 100">
+                <line x1="0" y1="50" x2="100" y2="50" stroke-width="10"></line>
+                <line x1="50" y1="0" x2="50" y2="100" stroke-width="10"></line>
+            </svg>
+            <input type="button" class="show_button" id="{{ column.title }}_button"
+                   onclick="myFunction('{{ column.title }}', '{{ column.title }}_button', '{{ column.title }}_plus')"
+                   value="Добавить еще одну карточку">
+            <div id="{{ column.title }}" style="display: none">
+                <textarea class="input_task" cols="40" rows="16" name="text" placeholder="Введите название карточки"
+                          required></textarea>
+                <input type="hidden" name="id" placeholder="column" value="{{ column.id }}"
+                       required autofocus>
+                <button class="add_button" type="submit"><p class="button_font">Добавить карточку</p></button>
+                <button class="hide_button" id="{{ column.title }}_button"
+                        onclick="myFunction('{{ column.title }}', '{{ column.title }}_button',
+                                '{{ column.title }}_plus')">
+                    <svg class="cancel" id="{{ column.title }}_plus" viewBox="0 0 100 100">
+                        <line x1="0" y1="100" x2="100" y2="0" stroke-width="10"></line>
+                        <line x1="0" y1="0" x2="100" y2="100" stroke-width="10"></line>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+{% endfor %}
+
+<div class="column">
+    <form method="POST" action="" style="margin-top: 10px; ">
+        {% csrf_token %}
+        <svg class="svg-circleplus" id="plus" viewBox="0 0 100 100">
+            <line x1="0" y1="50" x2="100" y2="50" stroke-width="10"></line>
+            <line x1="50" y1="0" x2="50" y2="100" stroke-width="10"></line>
+        </svg>
+        <input type="button" class="show_button" id="button"
+               onclick="myFunction('title', 'button', 'plus')"
+               value="Добавить еще одну колонку">
+        <div id="title" style="display: none">
+                <textarea class="input_task" cols="40" rows="16" name="title" placeholder="Введите название колонки"
+                          required></textarea>
+            <button class="add_button" type="submit"><p class="button_font">Добавить колонку</p></button>
+            <button class="hide_button" id="button"
+                    onclick="myFunction('title', 'button', 'plus')">
+                <svg class="cancel" id="{{ column.title }}_plus" viewBox="0 0 100 100">
+                    <line x1="0" y1="100" x2="100" y2="0" stroke-width="10"></line>
+                    <line x1="0" y1="0" x2="100" y2="100" stroke-width="10"></line>
+                </svg>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function myFunction(column, button, plus) {
+        var x = document.getElementById(column);
+        var button_doc = document.getElementById(button);
+        var icon = document.getElementById(plus);
+        if (x.style.display === "none") {
+            x.style.display = "block";
+            button_doc.style.display = "none";
+            icon.style.display = "none"
+        } else {
+            x.style.display = "none";
+            button_doc.style.display = "block";
+            icon.style.display = "block"
+        }
+    }
+</script>
+
+</body>
+</html>
