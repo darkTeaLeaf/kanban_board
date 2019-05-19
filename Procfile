@@ -1,1 +1,1 @@
-web: gunicorn first_django_app.wsgi --log-file -
+web: gunicorn kanban_board.wsgi --log-file -
